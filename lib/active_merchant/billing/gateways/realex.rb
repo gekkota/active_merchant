@@ -384,7 +384,7 @@ module ActiveMerchant
           xml.tag! 'dccinfo' do
             xml.tag! 'ccp', "fexco"
             xml.tag! 'type', "1"
-            if stage=="auth"||"receipt-in"
+            if stage=="auth" || stage=="receipt-in"
               xml.tag! 'rate', dcc[:rate]
               xml.tag! 'ratetype', "S"
               xml.tag! 'amount', dcc[:amount], currency: dcc[:currency]
