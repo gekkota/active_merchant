@@ -230,7 +230,7 @@ module ActiveMerchant
             xml.tag! 'paymentmethod', credit_card[:card_ref]
 
             #type = variable / fixed, sequence = first, subsequent, final
-            xml.tag! 'recurring', 'type='> 'variable', 'sequence'=>credit_card[:sequence] unless mode = 'realvault-3ds-verifyenrolled'
+            xml.tag! 'recurring', 'type='> 'variable', 'sequence'=>credit_card[:sequence] unless mode == 'realvault-3ds-verifyenrolled'
 
           end
 
@@ -387,7 +387,7 @@ module ActiveMerchant
             if stage=="auth"||"receipt-in"
               xml.tag! 'rate', dcc[:rate]
               xml.tag! 'ratetype', "S"
-              xml.tag! 'amount', dcc[:amount], 'currency'=>dcc[:currency]
+              xml.tag! 'amount', dcc[:amount], currency: dcc[:currency]
             end
           end
 
