@@ -1,5 +1,4 @@
 module ActiveMerchant #:nodoc:
-  module ActiveMerchant #:nodoc:
   module Billing #:nodoc:
   
     class Error < StandardError #:nodoc:
@@ -50,8 +49,6 @@ module ActiveMerchant #:nodoc:
 
       end
     end
-  end
-end
 
     class MultiResponse < Response
       def self.run(use_first_response = false, &block)
