@@ -1,11 +1,18 @@
 module ActiveMerchant #:nodoc:
+  module ActiveMerchant #:nodoc:
   module Billing #:nodoc:
-    class Error < ActiveMerchantError #:nodoc:
+  
+    class Error < StandardError #:nodoc:
     end
-
+  
     class Response
-      attr_reader :params, :message, :test, :authorization, :avs_result, :cvv_result, :error_code, :emv_authorization
-
+      attr_reader :params
+      attr_reader :message
+      attr_reader :test
+      attr_reader :authorization
+      attr_reader :avs_result, :cvv_result, :pareq,  :acs_url
+      attr_accessor :md
+      attr_reader :xid, :cavv, :eci
       def success?
         @success
       end
@@ -13,32 +20,38 @@ module ActiveMerchant #:nodoc:
       def test?
         @test
       end
-
+      
       def fraud_review?
         @fraud_review
       end
 
+       def three_d_secure?
+        @three_d_secure
+      end
+
+      def referral_b?
+        message == 'REF_B'
+      end
+      
       def initialize(success, message, params = {}, options = {})
         @success, @message, @params = success, message, params.stringify_keys
-        @test = options[:test] || false
+        @test = options[:test] || false        
         @authorization = options[:authorization]
         @fraud_review = options[:fraud_review]
-        @error_code = options[:error_code]
-        @emv_authorization = options[:emv_authorization]
 
-        @avs_result = if options[:avs_result].kind_of?(AVSResult)
-                        options[:avs_result].to_hash
-                      else
-                        AVSResult.new(options[:avs_result]).to_hash
-        end
+        @three_d_secure = options[:three_d_secure]
+        @pareq = options[:pareq]
+        @md = options[:md]
+        @acs_url = options[:acs_url]
 
-        @cvv_result = if options[:cvv_result].kind_of?(CVVResult)
-                        options[:cvv_result].to_hash
-                      else
-                        CVVResult.new(options[:cvv_result]).to_hash
-        end
+        @xid = options[:xid]
+        @cavv = options[:cavv]
+        @eci = options[:eci]        
+
       end
     end
+  end
+end
 
     class MultiResponse < Response
       def self.run(use_first_response = false, &block)
