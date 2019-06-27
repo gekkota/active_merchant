@@ -1,6 +1,6 @@
 module ActiveMerchant::Billing
 
-  class RealVault < RealexGateway
+  class RealvaultGateway < RealexGateway
     # 7. on page 24
     URL = 'https://epage.payandshop.com/epage-remote-plugins.cgi'
 
