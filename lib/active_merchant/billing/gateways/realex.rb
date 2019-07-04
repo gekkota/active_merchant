@@ -236,7 +236,7 @@ module ActiveMerchant
 
 
           xml.tag! 'pares', options[:pares] unless options[:pares].blank?
-          puts shamaker(timestamp,money, options)
+          puts shamaker(timestamp,money, options, credit_card)
           xml.tag! 'sha1hash', sha1from("#{timestamp}.#{@options[:login]}.#{sanitize_order_id(options[:order_id])}.#{amount(money)}.#{options[:currency] || currency(money)+".GBP"}.#{ credit_card.class == Hash ? credit_card[:payer_ref] : credit_card.number  }")
         end
              #raise xml.inspect
@@ -297,9 +297,9 @@ module ActiveMerchant
             xml.tag! 'xid', options[:xid]
             xml.tag! 'eci', options[:eci]
           end
-          puts shamaker(timestamp,money, options)
+          puts shamaker(timestamp,money, options, credit_card)
 
-          xml.tag! 'sha1hash', sha1from(shamaker(timestamp,money, options))
+          xml.tag! 'sha1hash', sha1from(shamaker(timestamp,money, options, credit_card))
           xml.tag! 'comments' do
             xml.tag! 'comment', options[:description], 'id' => 1
             xml.tag! 'comment', 'id' => 2
@@ -311,7 +311,7 @@ module ActiveMerchant
 
       end
 
-      def shamaker(timestamp,money, options)
+      def shamaker(timestamp,money, options, credit_card)
         "#{timestamp}.#{@options[:login]}.#{sanitize_order_id(options[:order_id])}.#{amount(money)}.#{options[:currency] || "#{currency(money)}.GBP"}.#{ credit_card.class == Hash ? credit_card[:payer_ref] : credit_card.number  }"
       end
 
@@ -397,7 +397,7 @@ module ActiveMerchant
           end
 
         # end
-          xml.tag! 'sha1hash', sha1from(shamaker(timestamp,money, options))
+          xml.tag! 'sha1hash', sha1from(shamaker(timestamp,money, options, credit_card))
           xml.tag! 'comments' do
             xml.tag! 'comment', options[:description], 'id' => 1
             xml.tag! 'comment', 'id' => 2
