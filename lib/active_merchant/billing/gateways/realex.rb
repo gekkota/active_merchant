@@ -363,7 +363,7 @@ module ActiveMerchant
             xml.tag! 'expdate', expiry_date(credit_card)
             xml.tag! 'type', CARD_MAPPING[credit_card.type.to_s]
             xml.tag! 'chname', credit_card.name
-            xml.tag! 'issueno', credit_card.issue_number
+            # xml.tag! 'issueno', credit_card.issue_number
 
             xml.tag! 'cvn' do
               xml.tag! 'number', credit_card.verification_value
