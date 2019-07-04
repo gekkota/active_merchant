@@ -237,7 +237,7 @@ module ActiveMerchant
 
           xml.tag! 'pares', options[:pares] unless options[:pares].blank?
           puts shamaker(timestamp,money, options, credit_card)
-          xml.tag! 'sha1hash', sha1from("#{timestamp}.#{@options[:login]}.#{sanitize_order_id(options[:order_id])}.#{amount(money)}.#{options[:currency] || currency(money)+".GBP"}.#{ credit_card.class == Hash ? credit_card[:payer_ref] : credit_card.number  }")
+          xml.tag! 'sha1hash', sha1from(shamaker)
         end
              #raise xml.inspect
       end
