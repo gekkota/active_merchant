@@ -236,7 +236,7 @@ module ActiveMerchant
 
 
           xml.tag! 'pares', options[:pares] unless options[:pares].blank?
-          puts "#{timestamp}.#{@options[:login]}.#{sanitize_order_id(options[:order_id])}.#{amount(money)}.#{options[:currency] || currency(money)}.#{ credit_card.class == Hash ? credit_card[:payer_ref] : credit_card.number  }"
+          puts shaMaker
           xml.tag! 'sha1hash', sha1from("#{timestamp}.#{@options[:login]}.#{sanitize_order_id(options[:order_id])}.#{amount(money)}.#{options[:currency] || currency(money)+".GBP"}.#{ credit_card.class == Hash ? credit_card[:payer_ref] : credit_card.number  }")
         end
              #raise xml.inspect
@@ -297,8 +297,9 @@ module ActiveMerchant
             xml.tag! 'xid', options[:xid]
             xml.tag! 'eci', options[:eci]
           end
+          puts shaMaker
 
-          xml.tag! 'sha1hash', sha1from("#{timestamp}.#{@options[:login]}.#{sanitize_order_id(options[:order_id])}.#{amount(money)}.#{options[:currency] || currency(money)}.#{ credit_card.class == Hash ? credit_card[:payer_ref] : credit_card.number  }")
+          xml.tag! 'sha1hash', sha1from(shamaker)
           xml.tag! 'comments' do
             xml.tag! 'comment', options[:description], 'id' => 1
             xml.tag! 'comment', 'id' => 2
@@ -310,6 +311,10 @@ module ActiveMerchant
 
       end
 
+      def shamaker
+        "#{timestamp}.#{@options[:login]}.#{sanitize_order_id(options[:order_id])}.#{amount(money)}.#{options[:currency] || currency(money)+".GBP"}.#{ credit_card.class == Hash ? credit_card[:payer_ref] : credit_card.number  }"
+
+      end
 
       def parse_credit_card_number(request)
         xml = REXML::Document.new(request)
@@ -393,7 +398,7 @@ module ActiveMerchant
           end
 
         # end
-          xml.tag! 'sha1hash', sha1from("#{timestamp}.#{@options[:login]}.#{sanitize_order_id(options[:order_id])}.#{amount(money)}.#{options[:currency] || currency(money)}.#{ credit_card.class == Hash ? credit_card[:payer_ref] : credit_card.number  }")
+          xml.tag! 'sha1hash', sha1from(shaMaker)
           xml.tag! 'comments' do
             xml.tag! 'comment', options[:description], 'id' => 1
             xml.tag! 'comment', 'id' => 2
