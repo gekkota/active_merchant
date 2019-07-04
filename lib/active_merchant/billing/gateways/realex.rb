@@ -236,7 +236,8 @@ module ActiveMerchant
 
 
           xml.tag! 'pares', options[:pares] unless options[:pares].blank?
-          xml.tag! 'sha1hash', sha1from("#{timestamp}.#{@options[:login]}.#{sanitize_order_id(options[:order_id])}.#{amount(money)}.#{options[:currency] || currency(money)}.#{ credit_card.class == Hash ? credit_card[:payer_ref] : credit_card.number  }")
+          puts "#{timestamp}.#{@options[:login]}.#{sanitize_order_id(options[:order_id])}.#{amount(money)}.#{options[:currency] || currency(money)}.#{ credit_card.class == Hash ? credit_card[:payer_ref] : credit_card.number  }"
+          xml.tag! 'sha1hash', sha1from("#{timestamp}.#{@options[:login]}.#{sanitize_order_id(options[:order_id])}.#{amount(money)}.#{options[:currency] || currency(money)}.GBP.#{ credit_card.class == Hash ? credit_card[:payer_ref] : credit_card.number  }")
         end
              #raise xml.inspect
       end
