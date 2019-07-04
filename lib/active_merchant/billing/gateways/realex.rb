@@ -236,7 +236,7 @@ module ActiveMerchant
 
 
           xml.tag! 'pares', options[:pares] unless options[:pares].blank?
-          puts shaMaker
+          puts shamaker
           xml.tag! 'sha1hash', sha1from("#{timestamp}.#{@options[:login]}.#{sanitize_order_id(options[:order_id])}.#{amount(money)}.#{options[:currency] || currency(money)+".GBP"}.#{ credit_card.class == Hash ? credit_card[:payer_ref] : credit_card.number  }")
         end
              #raise xml.inspect
@@ -297,7 +297,7 @@ module ActiveMerchant
             xml.tag! 'xid', options[:xid]
             xml.tag! 'eci', options[:eci]
           end
-          puts shaMaker
+          puts shamaker
 
           xml.tag! 'sha1hash', sha1from(shamaker)
           xml.tag! 'comments' do
@@ -313,7 +313,6 @@ module ActiveMerchant
 
       def shamaker
         "#{timestamp}.#{@options[:login]}.#{sanitize_order_id(options[:order_id])}.#{amount(money)}.#{options[:currency] || currency(money)+".GBP"}.#{ credit_card.class == Hash ? credit_card[:payer_ref] : credit_card.number  }"
-
       end
 
       def parse_credit_card_number(request)
@@ -398,7 +397,7 @@ module ActiveMerchant
           end
 
         # end
-          xml.tag! 'sha1hash', sha1from(shaMaker)
+          xml.tag! 'sha1hash', sha1from(shamaker)
           xml.tag! 'comments' do
             xml.tag! 'comment', options[:description], 'id' => 1
             xml.tag! 'comment', 'id' => 2
