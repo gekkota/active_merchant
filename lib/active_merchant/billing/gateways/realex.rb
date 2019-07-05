@@ -311,7 +311,7 @@ module ActiveMerchant
       end
 
       def shamaker(timestamp,money, options, credit_card)
-        string = "#{timestamp}.#{@options[:login]}.#{sanitize_order_id(options[:order_id])}.#{amount(money)}.#{options[:currency] || "#{currency(money)}"}.#{ credit_card.class == Hash ? credit_card[:payer_ref] : credit_card.number  }"
+        string = Digest::SHA1.hexdigest("#{timestamp}.#{@options[:login]}.#{sanitize_order_id(options[:order_id])}.#{amount(money)}.#{options[:currency] || "#{currency(money)}"}.#{ credit_card.class == Hash ? credit_card[:payer_ref] : credit_card.number  }")
         string += ".#{@options[:password]}"
         puts string
         Digest::SHA1.hexdigest("#{Digest::SHA1.hexdigest(string)}")
