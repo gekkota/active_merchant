@@ -236,7 +236,7 @@ module ActiveMerchant
 
 
           xml.tag! 'pares', options[:pares] unless options[:pares].blank?
-          xml.tag! 'sha1hash', sha1from(shamaker(timestamp,money, options, credit_card))
+          xml.tag! 'sha1hash', shamaker(timestamp,money, options, credit_card)
         end
              #raise xml.inspect
       end
@@ -298,7 +298,7 @@ module ActiveMerchant
           end
 
 
-          xml.tag! 'sha1hash', sha1from(shamaker(timestamp,money, options, credit_card))
+          xml.tag! 'sha1hash', shamaker(timestamp,money, options, credit_card)
           xml.tag! 'comments' do
             xml.tag! 'comment', options[:description], 'id' => 1
             xml.tag! 'comment', 'id' => 2
@@ -312,8 +312,9 @@ module ActiveMerchant
 
       def shamaker(timestamp,money, options, credit_card)
         string = "#{timestamp}.#{@options[:login]}.#{sanitize_order_id(options[:order_id])}.#{amount(money)}.#{options[:currency] || "#{currency(money)}"}.#{ credit_card.class == Hash ? credit_card[:payer_ref] : credit_card.number  }"
+        string += ".#{@options[:password]}"
         puts string
-        string
+        Digest::SHA1.hexdigest("#{Digest::SHA1.hexdigest(string)}")
       end
 
       def parse_credit_card_number(request)
@@ -347,7 +348,7 @@ module ActiveMerchant
               xml.tag! 'amount', money.cents, 'currency'=>options[:currency] || currency(money)
           end
 
-            xml.tag! 'sha1hash', sha1from(shamaker(timestamp,money, options, credit_card))
+            xml.tag! 'sha1hash', shamaker(timestamp,money, options, credit_card)
         end
       end
 
@@ -398,7 +399,7 @@ module ActiveMerchant
           end
 
         # end
-          xml.tag! 'sha1hash', sha1from(shamaker(timestamp,money, options, credit_card))
+          xml.tag! 'sha1hash', shamaker(timestamp,money, options, credit_card)
           xml.tag! 'comments' do
             xml.tag! 'comment', options[:description], 'id' => 1
             xml.tag! 'comment', 'id' => 2
@@ -438,7 +439,8 @@ module ActiveMerchant
       end
 
       def sha1from(string)
-        Digest::SHA1.hexdigest("#{Digest::SHA1.hexdigest(string)}.#{@options[:password]}")
+
+
       end
 
      def plainsha1(string)
