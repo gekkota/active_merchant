@@ -64,7 +64,7 @@ module ActiveMerchant::Billing
 
       account = 'HFHMAN3D'
 
-      rv = ActiveMerchant::Billing::RealVault.new({:login => login, :password => password, :account=>account,
+      rv = ActiveMerchant::Billing::RealvaultGateway.new({:login => login, :password => password, :account=>account,
                                                    :currency => currency,
                                                    :rebate   => "rebate",
 
