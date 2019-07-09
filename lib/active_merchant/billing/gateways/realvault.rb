@@ -67,7 +67,6 @@ module ActiveMerchant::Billing
       rv = ActiveMerchant::Billing::RealvaultGateway.new({:login => login, :password => password, :account=>account,
                                                    :currency => currency,
                                                    :rebate   => "rebate",
-
                                                    :gateway  => "Realex"})
 
       card = ActiveMerchant::Billing::CreditCard.new(
@@ -109,9 +108,9 @@ module ActiveMerchant::Billing
                  :payerref => payer[:ref]}
 
       # rv.purchase Money.new(777), card, options
-       #rv.store! payer, card, options
+       rv.store! payer, card, options
       # rv.send_payer payer, options
-      rv.send_card card, options
+      #rv.send_card card, options
     end
 
     private
