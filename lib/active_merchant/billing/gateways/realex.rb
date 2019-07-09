@@ -312,7 +312,8 @@ module ActiveMerchant
 
       def shamaker(timestamp,money, options, credit_card)
         timestampa = Time.now.strftime('%Y%m%d%H%M%S')
-        string = "#{timestampa}.#{@options[:login]}.#{sanitize_order_id(options[:order_id])}.#{amount(money)}.#{options[:currency] || #{currency(money)}}.#{ credit_card.class == Hash ? credit_card[:payer_ref] : credit_card.number  }"
+        currency = options[:currency] || currency(money)
+        string = "#{timestampa}.#{@options[:login]}.#{sanitize_order_id(options[:order_id])}.#{amount(money)}.#{currency}.#{ credit_card.class == Hash ? credit_card[:payer_ref] : credit_card.number  }"
         puts string
         string = Digest::SHA1.hexdigest(string)
         string += ".#{@options[:password]}"
