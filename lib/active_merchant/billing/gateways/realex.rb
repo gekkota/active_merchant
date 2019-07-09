@@ -311,12 +311,13 @@ module ActiveMerchant
       end
 
       def shamaker(timestamp,money, options, credit_card)
-        string = "#{timestamp}.#{@options[:login]}.#{sanitize_order_id(options[:order_id])}.#{amount(money)}.#{options[:currency] || "#{currency(money)}"}.#{ credit_card.class == Hash ? credit_card[:payer_ref] : credit_card.number  }"
+        timestampa = Time.now.strftime('%Y%m%d%H%M%S')
+        string = "#{timestampa}.#{@options[:login]}.#{sanitize_order_id(options[:order_id])}.#{amount(money)}.#{options[:currency] || #{currency(money)}}.#{ credit_card.class == Hash ? credit_card[:payer_ref] : credit_card.number  }"
         puts string
         string = Digest::SHA1.hexdigest(string)
         string += ".#{@options[:password]}"
         puts string
-        Digest::SHA1.hexdigest("#{Digest::SHA1.hexdigest(string)}")
+        Digest::SHA1.hexdigest(string)
       end
 
       def parse_credit_card_number(request)
