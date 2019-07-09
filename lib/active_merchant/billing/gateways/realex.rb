@@ -443,8 +443,10 @@ module ActiveMerchant
       end
 
       def sha1from(string)
-
-
+        string = Digest::SHA1.hexdigest(string)
+        string += ".#{@options[:password]}"
+        puts string
+        Digest::SHA1.hexdigest(string)
       end
 
      def plainsha1(string)
