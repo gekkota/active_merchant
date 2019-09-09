@@ -7,7 +7,7 @@ module ActiveMerchant::Billing
     # 7.1 (Setup a new Payer)
     # Create a Profile for a payer using payer‐new
     # If the payer exists another one will be stored
-    # payer is a hash (see self.test)
+    # payer is a hash (see self .test)
     def send_payer(payer, options = {})
 
       request = build_payer_new_request payer, options
@@ -47,7 +47,7 @@ module ActiveMerchant::Billing
         :send_card_response  => send_card_response }
     end
 
-    # ActiveMerchant::Billing::RealVault.test
+    # ActiveMerchant::Billing::RealvaultGateway.test
     # will store the payer and the card in the test account
     # makes a purchase before as suggested by the doc. to make sure auth is ok
     # works out of the box
@@ -64,7 +64,7 @@ module ActiveMerchant::Billing
 
       account = 'internet'
 
-      rv = ActiveMerchant::Billing::RealvaultGateway.new({:login => login, :password => password, :account=>account,
+      rv = self.new({:login => login, :password => password, :account=>account,
                                                    :currency => currency,
                                                    :rebate   => "rebate",
                                                    :gateway  => "Realex"})
