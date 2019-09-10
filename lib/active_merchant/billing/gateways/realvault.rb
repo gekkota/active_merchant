@@ -107,8 +107,8 @@ module ActiveMerchant::Billing
                  :currency => currency,
                  :payerref => payer[:ref]}
 
-      # rv.purchase Money.new(777), card, options
-       rv.store! payer, card, options
+       rv.purchase Money.new(777), card, options
+      # rv.store! payer, card, options
       # rv.send_payer payer, options
       #rv.send_card card, options
     end

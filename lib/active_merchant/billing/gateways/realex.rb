@@ -58,9 +58,13 @@ module ActiveMerchant
       def purchase(money, credit_card, options = {})
         requires!(options, :order_id)
         dcc = options[:use_dcc]==true
+
         if dcc
         request = build_purchase_or_authorization_request(:purchase, money, credit_card, options, "realvault-dccrate", {} )
         response = commit(request)
+        puts 'DCC'
+        puts "request: #{request}"
+        puts "response: #{response}"
         # raise response.inspect
         end
         if response.blank? || response.message=="NO DCC" || dcc == false
@@ -71,7 +75,13 @@ module ActiveMerchant
         #this is an actual payment
         request_b = build_purchase_or_authorization_request(:purchase, money, credit_card, options, "auth",  dcc_hash)
           # raise request_b.inspect
+
+        puts 'Normal'
+        puts "request: #{request_b}"
+
         response = commit(request_b)
+        puts "response: #{response.inspect}"
+        response
         #raise response.inspect
       end
 
@@ -117,12 +127,9 @@ module ActiveMerchant
             response = auth_3d_purchase(money, credit_card, options, dcc_hash)
             #At this point it may still be rejected as a Referral B, or standard failures.
             # response.referral_b?
-
-
          end
          # raise response.to_yaml
          response
-
       end
 
      def md_string_from_hash(dcc_hash)
