@@ -19,7 +19,11 @@ module ActiveMerchant
     # so if validation fails you can not correct and resend using the
     # same order id
     class RealexGateway < Gateway
-      URL = 'https://epage.payandshop.com/epage-remote.cgi'
+      # URL = 'https://api.sandbox.realexpayments.com/epage-remote.cgi'
+      # 'https://api.realexpayments.com/epage-remote.cgi'
+       URL = 'https://epage.payandshop.com/epage-remote.cgi'
+       # 'https://api.sandbox.realexpayments.com/epage-remote.cgi'
+      # 'https://api.realexpayments.com/epage-remote.cgi'
       URL_3D = 'https://epage.payandshop.com/epage-3dsecure.cgi'
       CARD_MAPPING = {
         'master'            => 'MC',
@@ -109,19 +113,6 @@ module ActiveMerchant
         #raise "#{response.inspect} ------------------------------- #{request.inspect}"
         response.md = md_string_from_hash(dcc_hash)  #if dcc && options[:md]
 
-        #  if response.success? &&  !url_for_3d(response) && not_enrolled_in_3d?(response)
-        #     options[:eci] = credit_card.type == :visa ? 6 : 1
-        #     #begin purchase
-        #     response = auth_3d_purchase(money, credit_card, options, dcc_hash)
-        # else
-        #     #At this point it may still be rejected as a Referral B, or standard failures.
-        #     # response.referral_b?
-
-        #      raise response.inspect
-        #  end
-
-        #
-
          if !response.success? &&  !url_for_3d(response) && not_enrolled_in_3d?(response)
             options[:eci] = 1#credit_card.type == :visa ? 6 : 1
             response = auth_3d_purchase(money, credit_card, options, dcc_hash)
@@ -200,7 +191,9 @@ module ActiveMerchant
 
       def build_3d_request(money, credit_card, options, dcc)
         timestamp = Time.now.strftime('%Y%m%d%H%M%S')
-        mode = options[:mode].blank? ? 'realvault-3ds-verifyenrolled' : 'realvault-3ds-verifysig'
+        mode = options[:mode].blank? ? 'realvault-3ds-verifyenrolled' : '3ds-verifysig'
+
+
         xml = Builder::XmlMarkup.new :indent => 2
         xml.tag! 'request', 'timestamp' => timestamp, 'type'=>mode do
         xml.tag! 'merchantid', @options[:login]
@@ -208,6 +201,7 @@ module ActiveMerchant
         xml.tag! 'orderid', options[:order_id]
         xml.tag! 'amount', (money.cents), 'currency' => 'GBP' #dcc[:currency]
 
+        unless mode == "3ds-verifysig"
         xml.tag! 'dccinfo' do
             xml.tag! 'ccp', "fexco"
             xml.tag! 'type', "1"
@@ -233,16 +227,19 @@ module ActiveMerchant
           end
           else
 
+
             xml.tag! 'payerref', credit_card[:payer_ref]
             xml.tag! 'paymentmethod', credit_card[:card_ref]
 
             #type = variable / fixed, sequence = first, subsequent, final
-            xml.tag! 'recurring', 'type='> 'variable', 'sequence'=>credit_card[:sequence] unless mode == 'realvault-3ds-verifyenrolled'
+            # xml.tag! 'recurring', 'type='> 'variable', 'sequence'=>credit_card[:sequence] unless mode == 'realvault-3ds-verifyenrolled'
 
           end
-
+        end
 
           xml.tag! 'pares', options[:pares] unless options[:pares].blank?
+
+          credit_card = "" if mode == "3ds-verifysig"
           xml.tag! 'sha1hash', shamaker(timestamp,money, options, credit_card)
         end
              #raise xml.inspect
@@ -305,7 +302,7 @@ module ActiveMerchant
           end
 
 
-          xml.tag! 'sha1hash', shamaker(timestamp,money, options, credit_card)
+          xml.tag! 'sha1hash', shamaker(timestamp, money, options, credit_card)
           xml.tag! 'comments' do
             xml.tag! 'comment', options[:description], 'id' => 1
             xml.tag! 'comment', 'id' => 2
@@ -317,10 +314,12 @@ module ActiveMerchant
 
       end
 
-      def shamaker(timestamp,money, options, credit_card)
+      def shamaker(timestamp,money, options, credit_card="")
         timestampa = Time.now.strftime('%Y%m%d%H%M%S')
         currency = options[:currency] || currency(money)
-        string = "#{timestampa}.#{@options[:login]}.#{sanitize_order_id(options[:order_id])}.#{amount(money)}.#{currency}.#{ credit_card.class == Hash ? credit_card[:payer_ref] : credit_card.number  }"
+        card_hash = credit_card.class == Hash ? credit_card[:payer_ref] : credit_card == "" ? "" : credit_card.number
+        card_hash ="#{card_hash}" unless card_hash == ""
+        string = "#{timestampa}.#{@options[:login]}.#{sanitize_order_id(options[:order_id])}.#{amount(money)}.#{currency}.#{ card_hash  }"
         puts string
         string = Digest::SHA1.hexdigest(string)
         string += ".#{@options[:password]}"
